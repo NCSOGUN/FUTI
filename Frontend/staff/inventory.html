@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>HealthPass • Inventory intelligence</title>
+        <link rel="stylesheet" href="../assets/css/styles.css">
+        <style>
+        .ai-wrap{max-width:1180px;margin:28px auto;padding:0 20px}
+        .ai-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+        .ai-card{background:#fff;border:1px solid #e4e9ed;border-radius:14px;padding:18px;margin-bottom:16px}
+        .ai-card h2{font-size:18px}.ai-table{width:100%;border-collapse:collapse}
+        .ai-table th,
+        .ai-table td{padding:10px;border-bottom:1px solid #edf0f2;text-align:left}
+        .ai-input{width:100%;padding:11px;border:1px solid #d8e0e5;border-radius:8px;margin:5px 0 12px}
+        .ai-alert{padding:12px;border-radius:9px;background:#fff6df;color:#795400;margin:8px 0}
+        .ai-muted{color:#65737d;font-size:13px}
+        .ai-actions{display:flex;gap:8px;flex-wrap:wrap}
+        .ai-kpi{font-size:26px;font-weight:700}
+        .ai-table-wrap{overflow:auto}
+        </style>
+    </head>
+    <body class="staff">
+        <div class="ai-wrap">
+        <div class="head"><div><h1>Inventory intelligence</h1><p class="muted">Stock visibility, expiry monitoring and evidence-based reorder suggestions.</p></div><a class="btn" href="workspace.html">← Staff workspace</a></div>
+        <div id="notice" class="ai-muted"></div><div class="ai-grid" id="summary"></div>
+        <div class="ai-card"><div class="head"><h2>AI-assisted stock recommendations</h2><button class="btn sm" id="refresh">Refresh</button></div><p class="ai-muted">Recommendations use your clinic's recorded stock and last 30 days of dispensing. They are decision support, not purchase orders.</p><div id="recommendations"></div></div>
+        <div class="ai-card"><h2>Inventory catalogue</h2><div class="ai-table-wrap"><table class="ai-table"><thead><tr><th>Item</th><th>SKU</th><th>Available</th><th>Reorder level</th><th>Earliest expiry</th></tr></thead><tbody id="items"></tbody></table></div></div>
+        <div class="ai-grid">
+        <div class="ai-card"><h2>Add inventory item</h2><form id="itemForm"><label>SKU</label><input class="ai-input" name="sku" required><label>Item / medicine name</label><input class="ai-input" name="name" required><label>Generic name</label><input class="ai-input" name="genericName"><label>Unit</label><input class="ai-input" name="unit" value="unit"><label>Reorder level</label><input class="ai-input" name="reorderLevel" type="number" min="0" value="10"><label>Target stock</label><input class="ai-input" name="targetStock" type="number" min="0" value="30"><button class="btn primary">Save item</button></form></div>
+        <div class="ai-card"><h2>Receive a batch</h2><form id="receiveForm"><label>Inventory item</label><select class="ai-input" name="itemId" id="receiveItem" required></select><label>Batch number</label><input class="ai-input" name="batchNumber" required><label>Quantity received</label><input class="ai-input" name="quantity" type="number" min="1" required><label>Expiry date</label><input class="ai-input" name="expiryDate" type="date" required><label>Supplier</label><input class="ai-input" name="supplier"><label>Unit cost (₦)</label><input class="ai-input" name="unitCost" type="number" min="0" step=".01" value="0"><button class="btn primary">Record receipt</button></form></div></div>
+    </div>
+    <script src="../assets/js/inventory.js"></script></body></html>

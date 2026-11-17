@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HealthPass</title><link rel="stylesheet" href="assets/css/styles.css"><script src="assets/js/icons.js"></script><script src="assets/js/api.js"></script><script src="assets/js/common.js"></script></head>
+<body>
+<main class="phone">
+  <div class="brand" style="margin:8px 0 16px"><span class="logo-tile" data-ic="cross" data-s="24"></span>HealthPass</div>
+  <!-- Put the hero photo at assets/images/hero.jpg; the box shows until it exists -->
+  <div class="card" style="height:200px;padding:0;overflow:hidden;background:var(--mint)"><img src="assets/images/hero.jpg.jfif" alt="Nurse and patient at a clinic" style="width:100%;height:100%;object-fit:cover" onerror="this.remove()"></div>
+  <h1 id="title" style="margin:20px 0 8px">One health ID for every clinic visit</h1>
+  <p id="sub" class="muted" style="margin-bottom:20px">Keep your health records and clinic money together. Simple, safe and always yours.</p>
+  <a class="btn primary" href="register.html" id="create">→ Create my HealthPass</a>
+  <a class="btn" href="login.html" style="margin-top:12px" id="have">I already have one</a>
+  <p class="muted small" style="margin-top:22px">Choose your language</p>
+  <div class="lang" id="lang"></div>
+</main>
+<script>
+/* Language switcher. Add/correct translations here (Yoruba, Hausa, Igbo need review by a native speaker). */
+const T={
+ English:{title:'One health ID for every clinic visit',sub:'Keep your health records and clinic money together. Simple, safe and always yours.',create:'→ Create my HealthPass',have:'I already have one'},
+ Yoruba:{title:'ID ìlera kan fún gbogbo ìbẹ̀wò ilé ìwòsàn',sub:'Pa àkọsílẹ̀ ìlera àti owó ilé ìwòsàn rẹ pọ̀. Rọrùn, láìléwu, tìrẹ nígbà gbogbo.',create:'→ Ṣẹ̀dá HealthPass mi',have:'Mo ti ní ọ̀kan'},
+ Hausa:{title:'Shaidar lafiya ɗaya ga kowace ziyarar asibiti',sub:'Ajiye bayanan lafiyarka da kuɗin asibiti a wuri ɗaya. Mai sauƙi, amintacce, naka ne.',create:'→ Ƙirƙiri HealthPass ɗina',have:'Ina da ɗaya tuni'},
+ Igbo:{title:'Njirimara ahụike otu maka nleta ụlọ ọgwụ ọ bụla',sub:'Debe ndekọ ahụike gị na ego ụlọ ọgwụ n’otu ebe. Dị mfe, dị nchebe, bụrụ nke gị.',create:'→ Mepụta HealthPass m',have:'Enwere m otu'}};
+function setLang(l){localStorage.setItem('hp_lang',l);
+  for(const k of ['title','sub','create','have']) document.getElementById(k).textContent=T[l][k];
+  hydrate();
+  document.querySelectorAll('#lang button').forEach(b=>b.classList.toggle('active',b.textContent===l));}
+Object.keys(T).forEach(l=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>setLang(l);document.getElementById('lang').append(b)});
+setLang(localStorage.getItem('hp_lang')||'English');
+</script></body></html>

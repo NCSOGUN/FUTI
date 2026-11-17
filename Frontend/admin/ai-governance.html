@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>HealthPass • AI governance</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .wrap{max-width:1200px;margin:28px auto;padding:0 20px}
+    .panel{background:#fff;border:1px solid #e4e9ed;border-radius:14px;padding:18px;margin:14px 0}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+    .fieldx{width:100%;padding:10px;border:1px solid #d7e0e5;border-radius:8px;margin:5px 0 12px}
+    .mutedx{color:#65737d;font-size:13px}.rowx{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .source{border:1px solid #e6ebef;border-radius:10px;padding:14px;margin:10px 0}
+    table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:9px;border-bottom:1px solid #edf0f2}
+    .scroll{overflow:auto}
+  </style>
+</head>
+<body class="staff">
+<div class="wrap">
+  <div class="head"><div><h1>AI governance centre</h1><p class="muted">Review research sources, user feedback and automated stock alerts.</p></div><a class="btn" href="index.html">← Admin dashboard</a></div>
+  <div class="panel"><h2>Submit a research source</h2>
+    <p class="mutedx">Use official guidelines, government publications, recognised journals and approved formularies. Do not publish unreviewed web content.</p>
+    <form id="sourceForm" class="grid">
+      <div><label>Title</label><input class="fieldx" name="title" required maxlength="250">
+      <label>Publisher</label><input class="fieldx" name="publisher" required>
+      <label>HTTPS source URL</label><input class="fieldx" name="url" type="url" required></div>
+      <div><label>Source type</label><select class="fieldx" name="sourceType"><option value="guideline">Clinical guideline</option><option value="government">Government</option><option value="journal">Journal</option><option value="formulary">Formulary</option><option value="other">Other</option></select>
+      <label>Tags (comma separated)</label><input class="fieldx" name="tags">
+      <label>Review due date</label><input class="fieldx" name="reviewDueAt" type="date"></div>
+      <div style="grid-column:1/-1"><label>Short summary</label><textarea class="fieldx" name="summary" rows="2"></textarea>
+      <label>Reviewed source text / relevant excerpt</label><textarea class="fieldx" name="content" rows="7" required maxlength="50000"></textarea>
+      <button class="btn primary">Save as draft</button><span id="sourceStatus" class="mutedx"></span></div>
+    </form>
+  </div>
+  <div class="panel"><div class="head"><h2>Research awaiting review</h2><button class="btn sm" id="reloadSources">Refresh</button></div><div id="sources"></div></div>
+  <div class="panel"><div class="head"><h2>Unreviewed user feedback</h2><button class="btn sm" id="reloadFeedback">Refresh</button></div><div id="feedback"></div></div>
+  <div class="panel"><div class="head"><h2>Inventory alert history</h2><button class="btn sm" id="reloadAlerts">Refresh</button></div><div id="alerts" class="scroll"></div></div>
+</div>
+<script src="../assets/js/api.js"></script><script src="../assets/js/ai-governance.js"></script>
+</body></html>

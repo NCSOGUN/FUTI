@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Register as staff • HealthPass</title><link rel="stylesheet" href="../assets/css/styles.css"></head><body>
+    <div class="auth"><a href="index.html" data-ic="back" data-s="26" style="color:var(--slate)" aria-label="Back"></a>
+    <h1 style="margin-top:8px">Register as staff</h1><p class="muted">Your clinic administrator will check your details and approve your account before you can log in. One person, one account.</p>
+    <p id="err" class="banner red hidden" role="alert" style="margin-top:12px"></p>
+    <form id="f" novalidate><label for="cl">Your clinic *</label><select class="field" id="cl"></select>
+    <label for="n">Full name *</label><input class="field" id="n"><label for="t">Job title *</label>
+    <select class="field" id="t"><option>Doctor</option><option>Nurse</option><option>Community health officer</option><option>Pharmacist</option><option>Lab scientist</option><option>Records officer</option></select>
+    <label for="ph">Phone *</label><input class="field" id="ph" type="tel"><label for="li">Professional licence number</label><input class="field" id="li">
+    <div id="evbox"></div><label for="u">Username *</label><input class="field" id="u" autocapitalize="none"><label for="p">Password * (min. 6 characters)</label><input class="field" id="p" type="password">
+    <label for="p2">Confirm password *</label><input class="field" id="p2" type="password"><button class="btn primary" style="margin-top:18px">→ Submit for approval</button></form></div>
+    <script src="../assets/js/icons.js"></script><script src="../assets/js/api.js"></script><script src="../assets/js/common.js"></script>
+    <script>
+    HealthPassAPI.publicClinics().then(l=>{$('#cl').innerHTML=l.map(c=>`<option value="${c.id}">${c.name} (${c.id}) • ${c.state}</option>`).join('')});
+    const EV=emailVerify('#evbox');
+    const err=m=>{$('#err').textContent=m;$('#err').classList.toggle('hidden',!m)};
+    $('#f').onsubmit=async e=>{e.preventDefault();const g=i=>$('#'+i).value.trim();
+     if(!EV.get()) return err('Please verify your email address first.');
+     if(!g('n')||!g('ph')||!g('u')) return err('Please fill in every field marked *.'); if($('#p').value.length<6) return err('Password must be at least 6 characters.');
+     if($('#p').value!==$('#p2').value) return err('Passwords do not match.');
+     try{await HealthPassAPI.registerStaff({email:EV.get(),clinicId:$('#cl').value,name:g('n'),title:$('#t').value,phone:g('ph'),licence:g('li'),username:g('u'),password:$('#p').value});
+      document.querySelector('.auth').innerHTML='<h1>Registration submitted</h1><p class="muted" style="margin:10px 0 18px">Your clinic administrator must approve your account before you can log in.</p><a class="btn primary" href="index.html">Back to login</a>';
+     }catch(x){err(x.message)}};
+    </script></body></html>    

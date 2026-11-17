@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Log in • HealthPass</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <main class="phone">
+    <a href="index.html" aria-label="Back" data-ic="back" data-s="26" style="color:var(--slate)"></a>
+    <div class="brand" style="margin:16px 0 8px">
+      <span class="logo-tile" data-ic="cross" data-s="24"></span>HealthPass
+    </div>
+    
+    <h1>Welcome back</h1>
+    <p class="muted">Log in with your HealthPass ID or phone number.</p>
+    
+    <form id="f">
+      <label for="id">HealthPass ID or phone</label>
+      <input class="field" id="id" value="HP-0234-8891" autocomplete="username">
+      
+      <label for="pin">PIN</label>
+      <input class="field" id="pin" type="password" inputmode="numeric" maxlength="4" placeholder="4-digit PIN" autocomplete="current-password">
+      
+      <p id="err" class="banner red hidden" role="alert" style="margin-top:12px"></p>
+      
+      <button class="btn primary" id="login-btn" style="margin-top:16px">→ Log in</button>
+    </form>
+    
+    <p class="muted" style="text-align:center;margin-top:16px">New here? <a href="register.html">Create my HealthPass</a></p>
+    <p class="small muted" style="text-align:center">Demo account: HP-0234-8891 • PIN 1234</p>
+  </main>
+
+  <!-- Load core scripts -->
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/common.js"></script>
+
+  <!-- Login Logic -->
+  <script>
+    document.getElementById('f').onsubmit = async function(e) {
+      e.preventDefault(); // Stop page reload
+      
+      const btn = document.getElementById('login-btn');
+      const errEl = document.getElementById('err');
+      const idVal = document.getElementById('id').value;
+      const pinVal = document.getElementById('pin').value;
+      
+      // Reset UI
+      btn.textContent = 'Logging in...';
+      errEl.classList.add('hidden');
+      
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: idVal, pin: pinVal })
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok && data.token) {
+          // Save token exactly as api.js expects
+          localStorage.setItem('hp_token', data.token);
+          window.location.href = 'app.html';
+        } else {
+          throw new Error(data.message || 'Login failed');
+        }
+      } catch (error) {
+        errEl.textContent = error.message;
+        errEl.classList.remove('hidden');
+        btn.textContent = '→ Log in';
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HealthPass • AI health consultant</title><link rel="stylesheet" href="../assets/css/styles.css">
+<style>
+.ai-wrap{max-width:1050px;margin:28px auto;padding:0 20px}.ai-card{background:#fff;border:1px solid #e4e9ed;border-radius:14px;padding:18px;margin:14px 0}
+.ai-muted{font-size:13px;color:#66747d}.chat-log{height:430px;overflow:auto;background:#f7f9fa;border-radius:12px;padding:14px}
+.bubble{max-width:85%;padding:12px 14px;margin:10px 0;border-radius:12px;white-space:pre-wrap;line-height:1.5}
+.user{margin-left:auto;background:#e0f2ef}.assistant{background:white;border:1px solid #e5eaed}.chat-row{display:flex;gap:8px;margin-top:12px}
+.chat-row textarea{flex:1;min-height:58px}.ai-input{padding:11px;border:1px solid #d8e0e5;border-radius:8px;width:100%;margin:6px 0 12px}
+.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#eef4f4;font-size:12px;margin:3px}
+</style></head><body class="staff"><div class="ai-wrap">
+<div class="head"><div><h1>HealthPass AI Consultant</h1><p class="muted">Health education supported by reviewed research and approved clinic records.</p></div><a class="btn" href="workspace.html">← Staff workspace</a></div>
+<div class="ai-card"><div class="ai-muted"><b>Safety:</b> This assistant does not diagnose, prescribe or replace a doctor or pharmacist. Do not enter names, HealthPass IDs, phone numbers or identifiable patient information. For severe or urgent symptoms, seek emergency care immediately.</div></div>
+<div class="ai-card"><h2>Ask a health-information question</h2><div id="chatLog" class="chat-log" aria-live="polite"><div class="bubble assistant">Hello. I can explain general health topics and medicine information using reviewed sources. I can also help you find approved clinics.</div></div>
+<form id="chatForm"><div class="chat-row"><textarea id="message" class="ai-input" maxlength="3000" placeholder="Ask a general health question. Do not include identifiable patient details." required></textarea><button class="btn primary">Send</button></div>
+<label class="ai-muted"><input type="checkbox" id="consentToStore"> I consent to storing this conversation for up to 30 days to support continuity. Leave unchecked for a non-persisted request.</label></form><div id="chatStatus" class="ai-muted"></div></div>
+<div class="ai-card"><h2>Find an approved clinic</h2><form id="clinicForm"><div class="chat-row"><input id="clinicQuery" class="ai-input" placeholder="Clinic name or location"><input id="clinicState" class="ai-input" placeholder="State"><input id="clinicLga" class="ai-input" placeholder="LGA"><input id="clinicService" class="ai-input" placeholder="Service e.g. antenatal"><button class="btn">Search</button></div></form><div id="clinics"></div></div>
+</div><script src="../assets/js/api.js"></script><script src="../assets/js/ai-consultant.js"></script></body></html>

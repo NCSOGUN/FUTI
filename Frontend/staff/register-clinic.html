@@ -1,0 +1,31 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Register clinic • HealthPass</title><link rel="stylesheet" href="../assets/css/styles.css"></head><body>
+    <div class="auth"><a href="index.html" data-ic="back" data-s="26" style="color:var(--slate)" aria-label="Back"></a>
+    <h1 style="margin-top:8px">Register your clinic</h1><p class="muted">The HealthPass admin reviews every clinic before it is approved. You will become the clinic administrator and can then approve your own staff.</p>
+    <p id="err" class="banner red hidden" role="alert" style="margin-top:12px"></p>
+    <form id="f" novalidate><h2 style="margin-top:18px">Clinic details</h2>
+    <label for="cid">Clinic number *</label><input class="field" id="cid" placeholder="e.g. PHC-0142">
+    <label for="cn">Clinic name *</label><input class="field" id="cn">
+    <div class="row"><div><label for="cst">State *</label><select class="field" id="cst"></select></div><div><label for="cl">LGA *</label><input class="field" id="cl"></div></div>
+    <label for="ca">Address *</label><input class="field" id="ca"><label for="cp">Clinic phone *</label><input class="field" id="cp" type="tel">
+    <label for="lic">Facility licence / registration number *</label><input class="field" id="lic">
+    <label>Services</label><div class="chips" id="svc"></div>
+    <h2 style="margin-top:22px">Administrator account</h2>
+    <label for="an">Full name *</label><input class="field" id="an"><label for="ap">Phone *</label><input class="field" id="ap" type="tel">
+    <div id="evbox"></div><label for="au">Username *</label><input class="field" id="au" autocapitalize="none"><label for="pw">Password * (min. 6 characters)</label><input class="field" id="pw" type="password">
+    <label for="pw2">Confirm password *</label><input class="field" id="pw2" type="password">
+    <button class="btn primary" style="margin-top:18px">→ Submit for approval</button></form></div>
+    <script src="../assets/js/icons.js"></script><script src="../assets/js/api.js"></script><script src="../assets/js/common.js"></script>
+    <script>
+    $('#cst').innerHTML=STATES.map(s=>`<option>${s}</option>`).join('');
+    $('#svc').innerHTML=['Antenatal','Immunisation','General','Laboratory','Pharmacy'].map(s=>`<label style="font-weight:400;margin:0"><input type="checkbox" value="${s}"> ${s}</label>`).join('');
+    const EV=emailVerify('#evbox');
+    const err=m=>{$('#err').textContent=m;$('#err').classList.toggle('hidden',!m)};
+    $('#f').onsubmit=async e=>{e.preventDefault();const g=i=>$('#'+i).value.trim();
+     for(const i of ['cid','cn','cl','ca','cp','lic','an','ap','au']) if(!g(i)) return err('Please fill in every field marked *.');
+     if(!EV.get()) return err('Please verify the administrator email address.');
+     if($('#pw').value.length<6) return err('Password must be at least 6 characters.'); if($('#pw').value!==$('#pw2').value) return err('Passwords do not match.');
+     try{await HealthPassAPI.portalRegisterClinic({clinic:{id:g('cid'),name:g('cn'),state:$('#cst').value,lga:g('cl'),address:g('ca'),phone:g('cp'),licence:g('lic'),services:[...document.querySelectorAll('#svc input:checked')].map(i=>i.value)},
+      admin:{email:EV.get(),name:g('an'),phone:g('ap'),username:g('au'),password:$('#pw').value}});
+      document.querySelector('.auth').innerHTML='<h1>Registration submitted</h1><p class="muted" style="margin:10px 0 18px">Your clinic is now waiting for approval by the HealthPass admin. You can log in once it is approved.</p><a class="btn primary" href="index.html">Back to login</a>';
+     }catch(x){err(x.message)}};
+    </script></body></html>    

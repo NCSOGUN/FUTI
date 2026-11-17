@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin Login • HealthPass</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+  <main class="phone" style="max-width: 500px; padding-top: 50px;">
+    <div class="brand" style="margin-bottom: 20px;">
+      <span class="logo-tile" data-ic="cross" data-s="24"></span>HealthPass
+    </div>
+    
+    <h1>Admin login</h1>
+    <p class="muted" style="margin-bottom: 20px;">HealthPass administrators and clinic administrators.</p>
+    
+    <form id="f">
+      <label for="u">Username</label>
+      <input class="field" id="u" type="text" placeholder="Enter username" required>
+      
+      <label for="p">Password</label>
+      <input class="field" id="p" type="password" placeholder="Enter password" required>
+      
+      <p id="err" class="banner red hidden" role="alert" style="margin-top:12px"></p>
+      
+      <button class="btn primary" type="submit" style="margin-top:16px; width: 100%;">→ Log in</button>
+    </form>
+    
+    <p class="muted" style="margin-top: 20px;">
+      <a href="#" onclick="alert('Contact support at admin@healthpass.com'); return false;">Contact admin</a>
+    </p>
+    
+    <p class="small muted" style="margin-top: 10px; line-height: 1.6;">
+      Demo logins:<br>
+      Main admin: <b>admin / admin123</b><br>
+      Clinic admin: <b>phc0142 / clinic123</b>
+    </p>
+  </main>
+
+  <script src="../assets/js/icons.js"></script>
+  
+  <script>
+    document.getElementById('f').onsubmit = async function(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      const errEl = document.getElementById('err');
+      
+      btn.textContent = 'Logging in...';
+      errEl.classList.add('hidden');
+      
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/portal/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            username: document.getElementById('u').value, 
+            password: document.getElementById('p').value 
+          })
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok && data.token) {
+          // Save token for the admin dashboard
+          localStorage.setItem('token', data.token); 
+          window.location.href = 'index.html'; 
+        } else {
+          throw new Error(data.message || 'Login failed');
+        }
+      } catch (error) {
+        errEl.textContent = error.message;
+        errEl.classList.remove('hidden');
+        btn.textContent = '→ Log in';
+      }
+    };
+  </script>
+</body>
+</html>

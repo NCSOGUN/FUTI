@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Scan Patient QR • HealthPass</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <!-- Load the QR Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body { background: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: system-ui, sans-serif; }
+    .scanner-container { background: #fff; padding: 32px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 500px; text-align: center; }
+    #reader { width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+    .patient-card { display: none; text-align: left; background: #E6F4F1; padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px solid #b2dfd5; }
+    .patient-card h2 { margin-top: 0; color: var(--teal); }
+  </style>
+</head>
+<body>
+
+  <div class="scanner-container">
+    <h1 style="color: #0f172a; margin-top: 0;">Scan Patient ID</h1>
+    <p class="muted" style="margin-bottom: 20px;">Point the camera at the patient's HealthPass QR code.</p>
+
+    <!-- Camera Feed -->
+    <div id="reader"></div>
+
+    <!-- Result Card -->
+    <div id="result" class="patient-card">
+      <h2>Patient Found</h2>
+      <p><b>Name:</b> <span id="p-name"></span></p>
+      <p><b>HealthPass ID:</b> <span id="p-id"></span></p>
+      <p><b>Phone:</b> <span id="p-phone"></span></p>
+      <p><b>Wallet Balance:</b> ₦<span id="p-balance"></span></p>
+      
+      <div style="margin-top: 20px; display: flex; gap: 10px;">
+        <button class="btn primary" onclick="resetScanner()">Scan Another</button>
+        <button class="btn" onclick="window.location.href='workspace.html'">Back to Workspace</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let html5QrCode;
+    const token = localStorage.getItem('token');
+    
+    // Redirect to login if not authenticated
+    if (!token) {
+      window.location.href = 'index.html';
+    }
+
+    // This function runs when a QR code is successfully scanned
+    async function onScanSuccess(decodedText) {
+      // Stop the camera to save battery
+      html5QrCode.stop().then(() => {
+        document.getElementById('reader').style.display = 'none';
+      }).catch(err => console.error(err));
+
+      // The QR code contains "HP:HP-0234-8891". We extract the ID part.
+      let patientId = decodedText;
+      if (decodedText.startsWith('HP:')) {
+        patientId = decodedText.replace('HP:', '');
+      }
+
+      // Fetch patient details from the backend
+      try {
+        const res = await fetch(`http://localhost:5000/api/staff/patient/${patientId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          // Display the patient data
+          document.getElementById('p-name').textContent = data.name;
+          document.getElementById('p-id').textContent = data.qrid;
+          document.getElementById('p-phone').textContent = data.phone;
+          document.getElementById('p-balance').textContent = data.balance;
+          document.getElementById('result').style.display = 'block';
+        } else {
+          alert(data.message || 'Patient not found.');
+          resetScanner();
+        }
+      } catch (e) {
+        alert('Network error. Is the server running?');
+        resetScanner();
+      }
+    }
+
+    // Start the scanner
+    function startScanner() {
+      document.getElementById('result').style.display = 'none';
+      document.getElementById('reader').style.display = 'block';
+      
+      html5QrCode = new Html5Qrcode("reader");
+      html5QrCode.start(
+        { facingMode: "environment" }, // Use back camera on mobile, webcam on laptop
+        { fps: 10, qrbox: 250 },
+        onScanSuccess
+      ).catch(err => {
+        alert("Camera error: " + err);
+      });
+    }
+
+    // Reset the scanner to scan again
+    function resetScanner() {
+      if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+          startScanner();
+        }).catch(err => console.error(err));
+      } else {
+        startScanner();
+      }
+    }
+
+    // Initialize on page load
+    startScanner();
+  </script>
+</body>
+</html>
